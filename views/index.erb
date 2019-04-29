@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Här finns snusen</h1>
+<% if defined?(kalle) %>
+    <% kalle.each do |pelle|%>
+    <img src="/assets/img/<%= pelle['image']%>" alt="bild" style="max-width:100px">
+    <a href="/snus/<%=pelle['id']%>"><%=pelle['name']%></a>
+    <% end%>
+<% end%>
+
+<a href="/add_snus">Lägg till då</a>
+
+
+</body>
+</html>
+<style>
+    body {
+        background-color: hotpink;
+        font-family: sans-serif;
+    }
+</style>

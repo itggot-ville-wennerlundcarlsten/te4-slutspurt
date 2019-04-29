@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Här finns snusen</h1>
+
+<form action="/save_snus" method="POST" enctype="multipart/form-data">
+    <label for="name">Name</label>
+    <input type="text" name="name">
+    <br>
+    <label for="type">Type</label>
+    <input type="text" name="type">
+    <br>
+    <label for="prillsize">Prillsize</label>
+    <input type="text" name="prillsize">
+    <br>
+    <label for="description">Description</label>
+    <input type="textarea" name="description">
+    <br>
+    <label for="taste">Taste</label>
+    <input type="text" name="taste">
+    <br>
+    <label for="netweight">Netweight</label>
+    <input type="text" name="netweight">
+    <br>
+    <label for="nicotinepergram">Nicotine/gram</label>
+    <input type="text" name="nicotinepergram">
+    <br>
+    <label for="brand">Brand</label>
+    <select type="select" name="brand">
+        <% distributors.each do |distributor|%>
+        <optgroup label="<%= distributor['name'] %>">
+            <% distributor['brands'].each do |brand|%>
+            <option value='<%= brand %>'><%= brand['name'] %></option>
+            <%end%>
+        <% end %>
+    </select>
+    <br>
+    <input type="file" name="file">
+    <br>
+    <input type="submit" value="Upload new snus">
+</form>
+
+
+
+</body>
+</html>
+<style>
+    body {
+        background-color: green;
+        font-family: sans-serif;
+    }
+</style>

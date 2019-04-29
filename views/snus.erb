@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Här finns snusen</h1>
+<% if defined?(kalle) %>
+    <img src="/assets/img/<%= kalle['image']%>" alt="bild">
+    <h2><%= kalle['name'] %></h2>
+    <p><%= kalle['type'] %></p>
+    <p><%= kalle['nicotinepergram'] %>mg/g</p>
+    <p><%= kalle['netweight'] %>g</p>
+    <p>Vikt per prilla: <%= kalle['prillsize'] %>g</p>
+    <p><%= kalle['description'] %></p>
+<% end%>
+<a href="/">Tillbaka</a> 
+
+
+</body>
+</html>
+<style>
+    body {
+        background-color: cyan;
+        font-family: sans-serif;
+    }
+</style>
