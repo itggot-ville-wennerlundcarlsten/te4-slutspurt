@@ -3,8 +3,9 @@
 <body>
 <h1>Här finns snusen</h1>
 <% if defined?(kalle) %>
-    <img src="/assets/img/<%= kalle['image']%>" alt="bild">
+    <img src="/assets/img/<%= kalle['image']%>" alt="bild" style="width:200px;height:200px">
     <h2><%= kalle['name'] %></h2>
+    <p><%= kalle['']%></p>
     <p><%= kalle['type'] %></p>
     <p><%= kalle['nicotinepergram'] %>mg/g</p>
     <p><%= kalle['netweight'] %>g</p>

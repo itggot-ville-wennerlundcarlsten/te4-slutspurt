@@ -1,0 +1,10 @@
+en:
+  test: "This is a test"
+  swedish: "Swedish"
+  english: "English"
+  change_lang: "Change Language"
+  add_snus: "Add some snus"
+  create_new_user: "Create new user"
+  back: "Go back"
+  password: "Password"
+  username: "Username"

@@ -3,15 +3,29 @@ require 'pg'
 
 get '/' do
   conn = Connection.conn
-  kalle = []
+  list = []
   conn.exec('SELECT * FROM snus') do |result|
     result.each do |row|
       # puts row
-      kalle << row
+      list << row
     end
   end
-  print kalle
-  erb :index, locals: { kalle: kalle }
+  I18n.locale = :swe if params[:lang] == 'swe'
+  I18n.locale = :en if params[:lang] == 'en'
+  erb :index, locals: { list: list }
+end
+
+get '/create_new_user' do
+  erb :create_new_user
+end
+
+post '/create_new_user' do
+  @username = params[:username]
+  @email = params[:email]
+  @password = BCrypt::Password.create(params[:password])
+  p @password
+  p params[:password]
+  erb :index
 end
 
 post '/save_snus' do
@@ -19,7 +33,9 @@ post '/save_snus' do
   @snusname = params[:name]
   @filename = params[:file] [:filename]
   file = params[:file] [:tempfile]
-  @brandid = eval(params[:brand])['id']
+  @brandid = params[:brand]
+  byebug
+  p @brandid
   insert_snus(params, @filename, @brandid)
   newsnus = nil
   conn.exec("SELECT id FROM snus WHERE name = '#{@snusname}'") do |result|
@@ -39,24 +55,17 @@ def insert_snus(
   brandid
 )
   conn = Connection.conn
-  conn.exec("INSERT INTO snus (
-    brandid,
-    type,
-    prillsize,
-    description,
-    taste,
-    netweight,
-    nicotinepergram,
-    name,
-    image)
+  conn.exec("INSERT INTO snus
+      (brandid, type, prillsize, description, taste,
+      netweight, nicotinepergram, name, image)
     VALUES (
-    #{brandid},
+    #{brandid.to_i},
     '#{params[:type]}',
-    #{params[:prillsize]},
+    #{params[:prillsize].to_f},
     '#{params[:description]}',
     '#{params[:taste]}',
-    #{params[:netweight]},
-    #{params[:nicotinepergram]},
+    #{params[:netweight].to_f},
+    #{params[:nicotinepergram].to_i},
     '#{params[:name]}',
     '#{filename}')")
 end
@@ -64,10 +73,14 @@ end
 get '/add_snus' do
   conn = Connection.conn
   distributors = []
-  #distributor = Distributor.get()# { {join: 'brand'}} 
-  distributors = Distributor.all() #SELECT * FROM distributors
-  
-  erb :add_snus, locals: { distributors: distributors }
+  brands = []
+  # distributor = Distributor.get()# { {join: 'brand'}}
+  distributors = Distributor.all { { join: 'brand', on: 'distributorid' } } # SELECT * FROM distributors
+  distributors.each do |result|
+    p result
+    brands << result
+  end
+  erb :add_snus, locals: { brands: brands }
 end
 
 get '/snus/:id' do

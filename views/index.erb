@@ -2,14 +2,25 @@
 <html>
 <body>
 <h1>Här finns snusen</h1>
-<% if defined?(kalle) %>
-    <% kalle.each do |pelle|%>
-    <img src="/assets/img/<%= pelle['image']%>" alt="bild" style="max-width:100px">
-    <a href="/snus/<%=pelle['id']%>"><%=pelle['name']%></a>
+<% if defined?(list) %>
+    <% list.each do |snus|%>
+    <img src="/assets/img/<%= snus['image']%>" alt="bild" style="max-width:100px">
+    <a href="/snus/<%=snus['id']%>"><%=snus['name']%></a>
     <% end%>
 <% end%>
-
-<a href="/add_snus">Lägg till då</a>
+<br>
+<%= I18n.t(:test) %>
+<form action="/" method="get">
+    <select name="lang">
+        <option value="en"><%= I18n.t(:english) %></option>
+        <option value="swe"><%= I18n.t(:swedish) %></option>
+    </select>
+    <br>
+    <input type="submit" value="<%= I18n.t(:change_lang) %>">
+</form>
+<a href="/create_new_user"><%= I18n.t(:create_new_user) %></a>
+<br>
+<a href="/add_snus"><%= I18n.t(:add_snus) %></a>
 
 
 </body>

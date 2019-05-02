@@ -1,0 +1,10 @@
+swe:
+  test: "Detta är ett test"
+  swedish: "Svenska"
+  english: "Engelska"
+  change_lang: "Ändra Språk"
+  add_snus: "Lägg till då"
+  create_new_user: "Skapa ny användare"
+  back: "Tillbaka"
+  password: "Lösenord"
+  username: "användarnamn"

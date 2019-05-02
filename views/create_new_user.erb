@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Här finns snusen</h1>
+
+<form action="/create_new_user" method="post">
+    <%= I18n.t(:username) %>: <input type="text" name="username"><br>
+    Email: <input type="text" name="email"><br>
+    <%= I18n.t(:password) %>: <input type="password" name="password"><br>
+    <br>
+    <input type="submit" value="<%= I18n.t(:create_new_user) %>">
+</form>
+
+<a href="/"><%= I18n.t(:back) %></a>
+
+
+</body>
+</html>
+<style>
+    body {
+        background-color: #2ffa4f;
+        font-family: sans-serif;
+    }
+</style>

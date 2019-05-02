@@ -26,14 +26,11 @@
     <input type="text" name="nicotinepergram">
     <br>
     <label for="brand">Brand</label>
-    <select type="select" name="brand">
-        <% distributors.each do |distributor|%>
-        <optgroup label="<%= distributor['name'] %>">
-            <% distributor['brands'].each do |brand|%>
-            <option value='<%= brand %>'><%= brand['name'] %></option>
-            <%end%>
-        <% end %>
-    </select>
+    <select name="brand">
+    <% brands.each do |row| %>
+    <option value='<%= row['brand_id'] %>'><%= row['brand_name'] %></option>
+    <% end %>
+    </select>    
     <br>
     <input type="file" name="file">
     <br>
