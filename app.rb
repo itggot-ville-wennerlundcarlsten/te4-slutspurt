@@ -1,12 +1,17 @@
 require 'sinatra'
 require 'pg'
+set :session_secret, 'super secret'
+enable :sessions
+
 
 get '/' do
   conn = Connection.conn
+  @user_id = session[:user_id]
+  @user = session[:user]
+  puts session[:user_id]
   list = []
   conn.exec('SELECT * FROM snus') do |result|
     result.each do |row|
-      # puts row
       list << row
     end
   end
@@ -20,12 +25,33 @@ get '/create_new_user' do
 end
 
 post '/create_new_user' do
+  conn = Connection.conn
   @username = params[:username]
   @email = params[:email]
   @password = BCrypt::Password.create(params[:password])
   p @password
   p params[:password]
-  erb :index
+  conn.exec("INSERT INTO userinfo (username, email, password) VALUES ('#{@username}', '#{@email}', '#{@password}')")
+  redirect "/"
+end
+
+post '/login' do
+  conn = Connection.conn
+  @email = params[:email]
+  @password = params[:password]
+  kalle = conn.exec("SELECT * FROM userinfo WHERE email = '#{@email}'").first
+  user = BCrypt::Password.new(kalle["password"])
+  if user == params[:password]
+    session[:user_id] = kalle["id"]
+    session[:user] = kalle["username"]
+  end
+  puts session[:user_id]
+  redirect "/"
+end
+
+get '/logout' do
+  session.clear
+  redirect "/"
 end
 
 post '/save_snus' do
@@ -34,7 +60,6 @@ post '/save_snus' do
   @filename = params[:file] [:filename]
   file = params[:file] [:tempfile]
   @brandid = params[:brand]
-  byebug
   p @brandid
   insert_snus(params, @filename, @brandid)
   newsnus = nil
@@ -83,16 +108,32 @@ get '/add_snus' do
   erb :add_snus, locals: { brands: brands }
 end
 
+post '/add_rating' do
+  @stars = params[:stars]
+  @user_id = session[:user_id]
+  @snus_id = params[:snus_id]
+  p @user_id
+  p @stars
+  p @snus_id
+  conn = Connection.conn
+  conn.exec("INSERT INTO rating (stars, userid, snusid) VALUES (#{@stars.to_i}, #{@user_id.to_i}, #{@snus_id.to_i})")
+  redirect "/snus/#{@snus_id}"
+end
+
 get '/snus/:id' do
+  @user_id = session[:user_id]
+  @user = session[:user]
   test = params[:id]
   puts test
-  kalle = ''
   conn = Connection.conn
-  conn.exec("SELECT * FROM snus WHERE id = #{test}") do |result|
+  snus = conn.exec("SELECT * FROM snus WHERE id = #{test}").first
+  ratings = []
+  conn.exec("SELECT stars FROM rating where snusid = #{snus['id']}") do |result|
     result.each do |row|
-      kalle = row
+      ratings << row
     end
   end
-  puts kalle
-  erb :snus, locals: { kalle: kalle }
+  p ratings
+  p snus
+  erb :snus, locals: { snus: snus, ratings: ratings }
 end

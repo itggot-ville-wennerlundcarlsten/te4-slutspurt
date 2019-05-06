@@ -2,16 +2,36 @@
 <html>
 <body>
 <h1>Här finns snusen</h1>
-<% if defined?(kalle) %>
-    <img src="/assets/img/<%= kalle['image']%>" alt="bild" style="width:200px;height:200px">
-    <h2><%= kalle['name'] %></h2>
-    <p><%= kalle['']%></p>
-    <p><%= kalle['type'] %></p>
-    <p><%= kalle['nicotinepergram'] %>mg/g</p>
-    <p><%= kalle['netweight'] %>g</p>
-    <p>Vikt per prilla: <%= kalle['prillsize'] %>g</p>
-    <p><%= kalle['description'] %></p>
+<% if defined?(snus) %>
+    <img src="/assets/img/<%= snus['image']%>" alt="bild" style="width:200px;height:200px">
+    <h2><%= snus['name'] %></h2>
+    <p><%= snus['']%></p>
+    <p><%= snus['type'] %></p>
+    <p><%= snus['nicotinepergram'] %>mg/g</p>
+    <p><%= snus['netweight'] %>g</p>
+    <p>Vikt per prilla: <%= snus['prillsize'] %>g</p>
+    <p><%= snus['description'] %></p>
 <% end%>
+<br>
+<% if defined?(ratings) %>
+    <h2>Ratings:</h2>
+    <% ratings.each do |rating|%>
+        <p><%=rating['stars']%>/5</p>
+    <% end %>
+<% end %>
+<br>
+<% if @user_id %>
+<form action="/add_rating" method="post">
+    <label for="stars">Stars:</label>
+    <input type="text" name="stars">
+    <input type="text" name="snus_id" value="<%= snus['id'] %>" style="display:none;">
+    <input type="submit" value="<%= I18n.t(:add_rating) %>">
+</form>
+<br>
+
+  <p><%= I18n.t(:logged_in_as) %> <%= @user %></p>
+  <a href="/logout"><%= I18n.t(:logout) %></a>
+<% end %>
 <a href="/">Tillbaka</a> 
 
 

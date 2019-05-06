@@ -8,3 +8,8 @@ swe:
   back: "Tillbaka"
   password: "Lösenord"
   username: "användarnamn"
+  here_is_the_snus: "Här finns snusen"
+  login: "Logga in"
+  logout: "Logga ut"
+  add_rating: "Lägg till en rescension"
+  logged_in_as: "Du är inloggad som:"
