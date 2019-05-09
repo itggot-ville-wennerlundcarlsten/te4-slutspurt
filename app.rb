@@ -3,7 +3,6 @@ require 'pg'
 set :session_secret, 'super secret'
 enable :sessions
 
-
 get '/' do
   conn = Connection.conn
   @user_id = session[:user_id]
@@ -31,27 +30,31 @@ post '/create_new_user' do
   @password = BCrypt::Password.create(params[:password])
   p @password
   p params[:password]
-  conn.exec("INSERT INTO userinfo (username, email, password) VALUES ('#{@username}', '#{@email}', '#{@password}')")
-  redirect "/"
+  conn.exec("INSERT INTO userinfo
+    (username, email, password)
+    VALUES
+    ('$1', '$2', '$3')",
+            [@username, @email, @password])
+  redirect '/'
 end
 
 post '/login' do
   conn = Connection.conn
   @email = params[:email]
   @password = params[:password]
-  kalle = conn.exec("SELECT * FROM userinfo WHERE email = '#{@email}'").first
-  user = BCrypt::Password.new(kalle["password"])
+  kalle = conn.exec('SELECT * FROM userinfo WHERE email = $1', [@email]).first # skydda mot sql injection
+  user = BCrypt::Password.new(kalle['password'])
   if user == params[:password]
-    session[:user_id] = kalle["id"]
-    session[:user] = kalle["username"]
+    session[:user_id] = kalle['id']
+    session[:user] = kalle['username']
   end
   puts session[:user_id]
-  redirect "/"
+  redirect '/'
 end
 
 get '/logout' do
   session.clear
-  redirect "/"
+  redirect '/'
 end
 
 post '/save_snus' do
@@ -96,11 +99,13 @@ def insert_snus(
 end
 
 get '/add_snus' do
-  conn = Connection.conn
-  distributors = []
   brands = []
   # distributor = Distributor.get()# { {join: 'brand'}}
-  distributors = Distributor.all { { join: 'brand', on: 'distributorid' } } # SELECT * FROM distributors
+  distributors = Distributor.all do
+    {
+      join: 'brand', on: 'distributorid'
+    }
+  end; # SELECT * FROM distributors
   distributors.each do |result|
     p result
     brands << result
@@ -116,7 +121,10 @@ post '/add_rating' do
   p @stars
   p @snus_id
   conn = Connection.conn
-  conn.exec("INSERT INTO rating (stars, userid, snusid) VALUES (#{@stars.to_i}, #{@user_id.to_i}, #{@snus_id.to_i})")
+  conn.exec("INSERT INTO rating
+    (stars, userid, snusid)
+    VALUES
+    (#{@stars.to_i}, #{@user_id.to_i}, #{@snus_id.to_i})")
   redirect "/snus/#{@snus_id}"
 end
 
